@@ -11,7 +11,8 @@ import {
   Header,
   Image,
   Icon,
-  Message
+  Message,
+  Grid
 } from 'semantic-ui-react';
 
 import logo from './logo.svg';
@@ -83,6 +84,17 @@ class App extends Component {
     }
   }
 
+  renderResults(props = this.props) {
+    const { loading, allPeople } = props;
+    if (!loading && allPeople.length > 0) {
+      return (
+        <div>
+          <strong>{allPeople.length}</strong> results
+        </div>
+      );
+    }
+  }
+
   render(props = this.props) {
     let searchIcon;
     if (props.filtered) {
@@ -96,15 +108,22 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
         </div>
         <Container text>
-          <Container textAlign="left">
-            <Header as="h1">Find people</Header>
-            <Input
-              value={props.term}
-              icon={searchIcon}
-              loading={props.loading}
-              placeholder='Search...'
-              onChange={props.filterPeople} />
-          </Container>
+          <Grid>
+            <Grid.Row columns={2}>
+              <Grid.Column textAlign='left'>
+                <Header as="h1">Find people</Header>
+                <Input
+                  value={props.term}
+                  icon={searchIcon}
+                  loading={props.loading}
+                  placeholder='Search by name, e-mail'
+                  onChange={props.filterPeople} />
+              </Grid.Column>
+              <Grid.Column textAlign='right' verticalAlign='bottom'>
+                {this.renderResults()}
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
           {this.renderPeopleTable()}
         </Container>
       </div>
