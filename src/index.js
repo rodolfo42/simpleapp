@@ -5,16 +5,26 @@ import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 import 'semantic-ui-css/semantic.min.css';
 
+import thunkMiddleware from 'redux-thunk'
+import { createLogger } from 'redux-logger'
 import { Provider } from 'react-redux';
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 
 import peopleReducer from './reducers/people';
+
+const loggerMiddleware = createLogger();
 
 const app = combineReducers({
   people: peopleReducer
 });
 
-const store = createStore(app);
+const store = createStore(
+  app,
+  applyMiddleware(
+    thunkMiddleware,
+    loggerMiddleware
+  )
+);
 
 ReactDOM.render(
   <Provider store={store}>
