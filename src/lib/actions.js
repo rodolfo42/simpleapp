@@ -23,7 +23,7 @@ export function filterPeople(term) {
       dispatch({ type: FILTER_PEOPLE_START, term, seqId });
       return delay(SEARCH_LATENCY).then(() => {
         if (term === 'wrong') {
-          throw new Error('error searching for people');
+          throw new Error(`error searching for ${term}`);
         }
       }).then(() => {
         const props = [

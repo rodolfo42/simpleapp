@@ -24,7 +24,8 @@ class App extends Component {
     loading: PropTypes.bool.isRequired,
     filterPeople: PropTypes.func.isRequired,
     clearFilter: PropTypes.func.isRequired,
-    term: PropTypes.string
+    term: PropTypes.string,
+    error: PropTypes.any
   };
 
   renderEmpty(props = this.props) {
@@ -65,8 +66,19 @@ class App extends Component {
     });
   }
 
+  renderError(error = this.props.error) {
+    return (
+      <Message error>
+        <Message.Header>Unexpected error</Message.Header>
+        <p>Message: {error.message}</p>
+      </Message>
+    );
+  }
+
   renderPeopleTable(props = this.props) {
-    if (!props.loading) {
+    if (props.error) {
+      return this.renderError(props.error);
+    } else if (!props.loading) {
       const people = props.allPeople;
       if (_.isEmpty(people)) {
         return this.renderEmpty(props);
@@ -95,7 +107,7 @@ class App extends Component {
 
   render(props = this.props) {
     let searchIcon;
-    if (props.filtered) {
+    if (props.term) {
       searchIcon = <Icon name='remove' link onClick={props.clearFilter} />
     } else {
       searchIcon = <Icon name='search' />
