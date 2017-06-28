@@ -8,6 +8,8 @@ import Flag from 'react-world-flags'
 import logo from './logo.svg';
 import './App.css';
 
+const SEARCH_LATENCY = 250;
+
 class App extends Component {
   static propTypes = {
     allPeople: PropTypes.array.isRequired,
@@ -16,7 +18,7 @@ class App extends Component {
     clearFilter: PropTypes.func.isRequired,
     term: PropTypes.string
   };
-  
+
   renderEmpty(props = this.props) {
     const term = props.term;
     let searchTermComponent = <strong>{term}</strong>;
@@ -30,7 +32,7 @@ class App extends Component {
       </Message>
     );
   }
-  
+
   renderPeopleRows(props = this.props) {
     const people = props.allPeople;
     return people.map((person, key) => {
@@ -54,19 +56,22 @@ class App extends Component {
       );
     });
   }
-  
+
   renderPeopleTable(props = this.props) {
-    const people = props.allPeople;
-    if (_.isEmpty(people)) {
-      return this.renderEmpty(props);
+    if (!props.loading) {
+      const people = props.allPeople;
+      if (_.isEmpty(people)) {
+        return this.renderEmpty(props);
+      } else {
+        return (
+          <Table celled>
+            <Table.Body>
+              {this.renderPeopleRows(props)}
+            </Table.Body>
+          </Table>
+        );
+      }
     }
-    return (
-      <Table celled>
-        <Table.Body>
-          {this.renderPeopleRows(props)}
-        </Table.Body>
-      </Table>
-    );
   }
 
   render(props = this.props) {
@@ -84,7 +89,7 @@ class App extends Component {
         <Container text>
           <Container textAlign="left">
             <Header as="h1">Find people</Header>
-            <Input 
+            <Input
               value={props.term}
               icon={searchIcon}
               loading={props.loading}
@@ -112,7 +117,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch({ type: 'FILTER_PEOPLE', term });
         timeoutId = setTimeout(() => {
           dispatch({ type: 'FILTER_PEOPLE_DONE', term });
-        }, 1000);
+        }, SEARCH_LATENCY);
       } else {
         dispatch({ type: 'CLEAR_FILTER' });
       }
