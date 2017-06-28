@@ -6,7 +6,6 @@ import Flag from 'react-world-flags'
 import {
   Table,
   Container,
-  Divider,
   Input,
   Header,
   Image,
