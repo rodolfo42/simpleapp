@@ -9,17 +9,21 @@ import thunkMiddleware from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 import { Provider } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-
-import peopleReducer from './reducers/people';
+import reducers from './reducers';
+import { isStart } from './reducers/async';
 
 const loggerMiddleware = createLogger();
+const reducer = combineReducers(reducers);
 
-const app = combineReducers({
-  people: peopleReducer
-});
-
-const store = createStore(
-  app,
+const store = createStore((state = {}, action) => {
+  if (action.seqId &&
+      !isStart(action) &&
+      state.async &&
+      !state.async.includes(action.seqId)) {
+    return state;
+  }
+  return reducer(state, action);
+},
   applyMiddleware(
     thunkMiddleware,
     loggerMiddleware

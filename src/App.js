@@ -13,11 +13,10 @@ import {
   Message,
   Grid
 } from 'semantic-ui-react';
+import * as actions from './lib/actions';
 
 import logo from './logo.svg';
 import './App.css';
-
-const SEARCH_LATENCY = 250;
 
 class App extends Component {
   static propTypes = {
@@ -84,8 +83,8 @@ class App extends Component {
   }
 
   renderResults(props = this.props) {
-    const { loading, allPeople } = props;
-    if (!loading && allPeople.length > 0) {
+    const { filtered, allPeople } = props;
+    if (filtered && allPeople.length > 0) {
       return (
         <div>
           <strong>{allPeople.length}</strong> results
@@ -135,22 +134,13 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  let timeoutId;
   return {
     filterPeople: (e, data) => {
-      const term = data.value;
-      clearTimeout(timeoutId);
-      if (term) {
-        dispatch({ type: 'FILTER_PEOPLE', term });
-        timeoutId = setTimeout(() => {
-          dispatch({ type: 'FILTER_PEOPLE_DONE', term });
-        }, SEARCH_LATENCY);
-      } else {
-        dispatch({ type: 'CLEAR_FILTER' });
-      }
+      const { value } = data;
+      dispatch(actions.filterPeople(value));
     },
     clearFilter: () => {
-      dispatch({ type: 'CLEAR_FILTER' });
+      dispatch(actions.clearFilter());
     }
   }
 }
