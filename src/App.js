@@ -2,8 +2,17 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Table, Container, Divider, Input, Header, Image, Icon, Message } from 'semantic-ui-react';
 import Flag from 'react-world-flags'
+import {
+  Table,
+  Container,
+  Divider,
+  Input,
+  Header,
+  Image,
+  Icon,
+  Message
+} from 'semantic-ui-react';
 
 import logo from './logo.svg';
 import './App.css';
