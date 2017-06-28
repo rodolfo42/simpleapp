@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import population from '../lib/population';
 
 export default function reducer(state = {}, action) {
@@ -9,9 +10,17 @@ export default function reducer(state = {}, action) {
     case 'FILTER_PEOPLE_DONE':
       term = action.term;
       if (term) {
+        const props = [
+          'name.title',
+          'name.first',
+          'name.last',
+          'email'
+        ];
         const filteredPeople = population.filter((person) => {
-          const data = `${person.name.title}. ${person.name.first} ${person.name.last} ${person.email}`;
-          return data.toLowerCase().includes(term.toLowerCase());
+          return props.some(prop => {
+            return _.get(person, prop).toLowerCase()
+              .includes(term.toLowerCase());
+          });
         });
         return { ...state, term, allPeople: filteredPeople, loading: false, filtered: true };
       }
