@@ -16,9 +16,11 @@ const reducer = combineReducers(reducers);
 
 const store = createStore((state = {}, action) => {
   if (action.seqId &&
+      action.stateKey &&
       !isStart(action) &&
       state.async &&
-      !state.async.includes(action.seqId)) {
+      state.async[action.stateKey] &&
+      !state.async[action.stateKey].includes(action.seqId)) {
     return state;
   }
   return reducer(state, action);

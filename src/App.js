@@ -1,16 +1,14 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import * as actions from './lib/actions';
 import AppMenu from './components/AppMenu';
-import PeopleTable from './components/PeopleTable';
-import OrdersTable from './components/OrdersTable';
+import itemsTable from './components/PeopleTable';
 import { Grid } from 'semantic-ui-react';
 import { Route } from 'react-router-dom';
 
 import logo from './logo.svg';
 import './App.css';
+
+const PeopleTable = itemsTable('people');
+const OrdersTable = itemsTable('orders');
 
 class App extends Component {
   static propTypes = {}

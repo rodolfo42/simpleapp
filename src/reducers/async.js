@@ -12,18 +12,18 @@ export function isStart(action) {
   return action.type.endsWith('_START');
 }
 
-export default function reducer(state = [], action) {
-  const { seqId } = action;
+export default function reducer(state = {}, action) {
+  const { seqId, stateKey } = action;
 
-  if (seqId) {
-    let newState = [];
+  if (seqId && stateKey) {
+    let newState = _.get(state, stateKey, []);
     if (isStart(action)) {
       newState = [seqId];
     } else if (isDone(action) || isError(action)) {
-      newState = _.reject(state, id => id === seqId);
+      newState = _.reject(newState, id => id === seqId);
     }
 
-    return newState;
+    return _.merge({}, state, { [stateKey]: newState });
   }
 
   return state;

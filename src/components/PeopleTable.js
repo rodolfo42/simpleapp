@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import Flag from 'react-world-flags'
 import {
   Table,
-  Container,
   Input,
   Header,
   Image,
@@ -13,7 +12,7 @@ import {
   Message,
   Grid
 } from 'semantic-ui-react';
-import * as actions from '../lib/actions';
+import actions from '../lib/actions';
 import { withRouter } from 'react-router-dom';
 
 class PeopleTable extends Component {
@@ -21,6 +20,7 @@ class PeopleTable extends Component {
     loading: PropTypes.bool.isRequired,
     filterPeople: PropTypes.func.isRequired,
     term: PropTypes.string,
+    stateKey: PropTypes.string.isRequired,
     allPeople: PropTypes.array.isRequired,
     clearFilter: PropTypes.func.isRequired,
     error: PropTypes.any
@@ -116,7 +116,7 @@ class PeopleTable extends Component {
       <Grid>
         <Grid.Row columns={2}>
           <Grid.Column textAlign='left'>
-            <Header as="h1">Find people</Header>
+            <Header as="h1">Find {props.stateKey}</Header>
             <Input
               value={props.term}
               icon={searchIcon}
@@ -135,20 +135,23 @@ class PeopleTable extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return state.people;
+const mapStateToProps = stateKey => state => {
+  return _.merge({}, state[stateKey], { stateKey });
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = stateKey => dispatch => {
+  const act = actions(stateKey);
   return {
     filterPeople: (e, data) => {
       const { value } = data;
-      dispatch(actions.filterPeople(value));
+      dispatch(act.filterPeople(value));
     },
     clearFilter: () => {
-      dispatch(actions.clearFilter());
+      dispatch(act.clearFilter());
     }
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PeopleTable));
+export default function peopleTable(key) {
+  return withRouter(connect(mapStateToProps(key), mapDispatchToProps(key))(PeopleTable));
+}
